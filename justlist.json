@@ -1,0 +1,27 @@
+{
+    "name": "USDTLIST",
+    "logoURI": "https://coin.top/production/logo/usdj.png",
+    "timestamp": 1610339529000,
+    "tokens": [{
+    "chainId": 1,
+    "address": "TXyheZ995zvYKok2mZNRzwXjjSrUGzg9nb",
+    "name": "Tether USD",
+    "symbol": "USDT",
+    "decimals": 18,
+    "logoURI": "https://seeklogo.com/images/T/tether-usdt-logo-FA55C7F397-seeklogo.com.png"
+    },
+    {
+    "chainId": 1,
+    "address": "TXyheZ995zvYKok2mZNRzwXjjSrUGzg9nb",
+    "name": "Tether USD",
+    "symbol": "USDT",
+    "decimals": 18,
+    "logoURI": "https://seeklogo.com/images/T/tether-usdt-logo-FA55C7F397-seeklogo.com.png"
+    }
+    ],
+    "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+    }
+   }
