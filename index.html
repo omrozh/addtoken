@@ -1,35 +1,36 @@
 <script>
-  const tokenAddress = "0x1d1ed24b4A070503880052Bf51c04FE22A044019"
-  const tokenSymbol = "USDT"
-  const tokenDecimals = 18
-  const tokenImage = "https://cdn.worldvectorlogo.com/logos/tether.svg"
-  
-  try {
-    // 'wasAdded' is a boolean. Like any RPC method, an error can be thrown.
-    const wasAdded = await provider // Or window.ethereum if you don't support EIP-6963.
-      .request({
+  const tokenAddress = "0x1d1ed24b4A070503880052Bf51c04FE22A044019";
+  const tokenSymbol = "USDT";
+  const tokenDecimals = 18;
+  const tokenImage = "https://cdn.worldvectorlogo.com/logos/tether.svg";
+
+  // Define an async function to handle the async call
+  async function addTokenToWallet() {
+    try {
+      // Use window.ethereum directly if you are targeting non-EIP-6963 wallets
+      const wasAdded = await window.ethereum.request({
         method: "wallet_watchAsset",
         params: {
           type: "ERC20",
           options: {
-            // The address of the token.
             address: tokenAddress,
-            // A ticker symbol or shorthand, up to 5 characters.
             symbol: tokenSymbol,
-            // The number of decimals in the token.
             decimals: tokenDecimals,
-            // A string URL of the token logo.
             image: tokenImage,
           },
         },
-      })
-  
-    if (wasAdded) {
-      console.log("Thanks for your interest!")
-    } else {
-      console.log("Your loss!")
+      });
+
+      if (wasAdded) {
+        console.log("Thanks for your interest!");
+      } else {
+        console.log("Your loss!");
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error)
   }
+
+  // Call the async function
+  addTokenToWallet();
 </script>
