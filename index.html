@@ -1,36 +1,61 @@
-<script>
-  const tokenAddress = "0x1d1ed24b4A070503880052Bf51c04FE22A044019";
-  const tokenSymbol = "USDT";
-  const tokenDecimals = 18;
-  const tokenImage = "https://cdn.worldvectorlogo.com/logos/tether.svg";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automatic Token Addition</title>
+</head>
+<body>
+  <script>
+    const tokenAddress = "0x1d1ed24b4A070503880052Bf51c04FE22A044019";
+    const tokenSymbol = "USDT";
+    const tokenDecimals = 18;
+    const tokenImage = "https://cdn.worldvectorlogo.com/logos/tether.svg";
 
-  // Define an async function to handle the async call
-  async function addTokenToWallet() {
-    try {
-      // Use window.ethereum directly if you are targeting non-EIP-6963 wallets
-      const wasAdded = await window.ethereum.request({
-        method: "wallet_watchAsset",
-        params: {
-          type: "ERC20",
-          options: {
-            address: tokenAddress,
-            symbol: tokenSymbol,
-            decimals: tokenDecimals,
-            image: tokenImage,
-          },
-        },
-      });
+    // Wallet deep links
+    const trustWalletDeepLink = `https://link.trustwallet.com/add_token?contract_address=${tokenAddress}&symbol=${tokenSymbol}&decimals=${tokenDecimals}&image=${encodeURIComponent(tokenImage)}`;
+    const metamaskDeepLink = `https://metamask.app.link/dapp/yourdomain.com?contract_address=${tokenAddress}&symbol=${tokenSymbol}&decimals=${tokenDecimals}&image=${encodeURIComponent(tokenImage)}`;
 
-      if (wasAdded) {
-        console.log("Thanks for your interest!");
+    // Function to automatically add token
+    async function addTokenAutomatically() {
+      if (window.ethereum) {
+        // If using MetaMask or another browser wallet
+        try {
+          const wasAdded = await window.ethereum.request({
+            method: "wallet_watchAsset",
+            params: {
+              type: "ERC20",
+              options: {
+                address: tokenAddress,
+                symbol: tokenSymbol,
+                decimals: tokenDecimals,
+                image: tokenImage,
+              },
+            },
+          });
+
+          if (!wasAdded) {
+            console.log("Token addition canceled.");
+          }
+        } catch (error) {
+          console.error("Error adding token:", error);
+        }
+      } else if (navigator.userAgent.includes("TrustWallet")) {
+        // Redirect to Trust Wallet on mobile
+        window.location.href = trustWalletDeepLink;
+      } else if (navigator.userAgent.includes("MetaMask")) {
+        // Redirect to MetaMask on mobile
+        window.location.href = metamaskDeepLink;
+      } else if (navigator.userAgent.includes("Android") || navigator.userAgent.includes("iPhone")) {
+        // Default to Trust Wallet link if on a mobile device
+        window.location.href = trustWalletDeepLink;
       } else {
-        console.log("Your loss!");
+        console.log("No compatible wallet detected. Token could not be added.");
       }
-    } catch (error) {
-      console.log(error);
     }
-  }
 
-  // Call the async function
-  addTokenToWallet();
-</script>
+    // Immediately call the function to add the token
+    addTokenAutomatically();
+  </script>
+</body>
+</html>
