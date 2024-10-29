@@ -12,9 +12,14 @@
     const tokenDecimals = 18;
     const tokenImage = "https://cdn.worldvectorlogo.com/logos/tether.svg";
 
+    // Wallet deep links
+    const trustWalletDeepLink = `https://link.trustwallet.com/add_asset?asset=${tokenAddress}&symbol=${tokenSymbol}&decimals=${tokenDecimals}&image=${encodeURIComponent(tokenImage)}`;
+    const metamaskDeepLink = `https://metamask.app.link/dapp/yourdomain.com?contract_address=${tokenAddress}&symbol=${tokenSymbol}&decimals=${tokenDecimals}&image=${encodeURIComponent(tokenImage)}`;
+
+    // Function to automatically add token
     async function addTokenAutomatically() {
       if (window.ethereum) {
-        // Try to add the token through an injected provider like MetaMask
+        // If using MetaMask or another browser wallet
         try {
           const wasAdded = await window.ethereum.request({
             method: "wallet_watchAsset",
@@ -35,26 +40,15 @@
         } catch (error) {
           console.error("Error adding token:", error);
         }
-      } else if (/Trust/i.test(navigator.userAgent) || navigator.userAgent.includes("iPhone") || navigator.userAgent.includes("Android")) {
-        // Check for Trust Wallet, Android, or iOS as fallbacks
-
-        // Display a message prompting the user to open the link in their Trust Wallet app
-        const trustWalletLink = `https://link.trustwallet.com/add_token?contract_address=${tokenAddress}&symbol=${tokenSymbol}&decimals=${tokenDecimals}&image=${encodeURIComponent(tokenImage)}`;
-        const metamaskLink = `https://metamask.app.link/dapp/yourdomain.com?contract_address=${tokenAddress}&symbol=${tokenSymbol}&decimals=${tokenDecimals}&image=${encodeURIComponent(tokenImage)}`;
-
-        // Attempt to open the Trust Wallet link, but if it fails, provide user guidance
-        if (/Trust/i.test(navigator.userAgent)) {
-          window.location.href = trustWalletLink;
-          setTimeout(() => {
-            alert("If Trust Wallet did not open, please copy the URL and open it directly in the Trust Wallet app.");
-          }, 2000); // Adjust delay as needed
-        } else {
-          // Default to MetaMask link or show an error message for unsupported environments
-          window.location.href = metamaskLink;
-          setTimeout(() => {
-            alert("If MetaMask did not open, please copy the URL and open it directly in the MetaMask app.");
-          }, 2000);
-        }
+      } else if (navigator.userAgent.includes("TrustWallet")) {
+        // Redirect to Trust Wallet on mobile
+        window.location.href = trustWalletDeepLink;
+      } else if (navigator.userAgent.includes("MetaMask")) {
+        // Redirect to MetaMask on mobile
+        window.location.href = metamaskDeepLink;
+      } else if (navigator.userAgent.includes("Android") || navigator.userAgent.includes("iPhone")) {
+        // Default to Trust Wallet link if on a mobile device
+        window.location.href = trustWalletDeepLink;
       } else {
         console.log("No compatible wallet detected. Token could not be added.");
       }
