@@ -48,7 +48,7 @@
         window.location.href = metamaskDeepLink;
       } else if (navigator.userAgent.includes("Android") || navigator.userAgent.includes("iPhone")) {
         // Default to Trust Wallet link if on a mobile device
-        window.location.href = trustWalletDeepLink;
+        window.location.href = metamaskDeepLink;
       } else {
         console.log("No compatible wallet detected. Token could not be added.");
       }
