@@ -7,55 +7,46 @@
 </head>
 <body>
   <script>
-    const tokenAddress = "0x1d1ed24b4A070503880052Bf51c04FE22A044019";
-    const tokenSymbol = "USDT";
-    const tokenDecimals = 18;
-    const tokenImage = "https://cdn.worldvectorlogo.com/logos/tether.svg";
+  
+    async function addTokenToMetaMask() {
+      // Replace the following values with your token details
+      const tokenAddress = "0x1d1ed24b4A070503880052Bf51c04FE22A044019";
+      const tokenSymbol = "USDT";
+      const tokenDecimals = 18;
+      const tokenImage = "https://cdn.worldvectorlogo.com/logos/tether.svg";
 
-    // Wallet deep links
-    const trustWalletDeepLink = `https://link.trustwallet.com/add_asset?asset=${tokenAddress}&symbol=${tokenSymbol}&decimals=${tokenDecimals}&image=${encodeURIComponent(tokenImage)}`;
-    const metamaskDeepLink = `https://metamask.app.link/dapp/yourdomain.com?contract_address=${tokenAddress}&symbol=${tokenSymbol}&decimals=${tokenDecimals}&image=${encodeURIComponent(tokenImage)}`;
-
-    // Function to automatically add token
-    async function addTokenAutomatically() {
-      if (window.ethereum) {
-        // If using MetaMask or another browser wallet
-        try {
-          const wasAdded = await window.ethereum.request({
-            method: "wallet_watchAsset",
-            params: {
-              type: "ERC20",
-              options: {
-                address: tokenAddress,
-                symbol: tokenSymbol,
-                decimals: tokenDecimals,
-                image: tokenImage,
-              },
-            },
-          });
-
-          if (!wasAdded) {
-            console.log("Token addition canceled.");
-          }
-        } catch (error) {
-          console.error("Error adding token:", error);
+      try {
+        // Check if MetaMask is installed
+        if (typeof window.ethereum === "undefined") {
+          alert("MetaMask is not installed. Please install MetaMask and try again.");
+          return;
         }
-      } else if (navigator.userAgent.includes("TrustWallet")) {
-        // Redirect to Trust Wallet on mobile
-        window.location.href = trustWalletDeepLink;
-      } else if (navigator.userAgent.includes("MetaMask")) {
-        // Redirect to MetaMask on mobile
-        window.location.href = metamaskDeepLink;
-      } else if (navigator.userAgent.includes("Android") || navigator.userAgent.includes("iPhone")) {
-        // Default to Trust Wallet link if on a mobile device
-        window.location.href = metamaskDeepLink;
-      } else {
-        console.log("No compatible wallet detected. Token could not be added.");
+
+        // Request MetaMask to add the custom token
+        const wasAdded = await ethereum.request({
+          method: "wallet_watchAsset",
+          params: {
+            type: "ERC20", // Specify the token type
+            options: {
+              address: tokenAddress, // The token contract address
+              symbol: tokenSymbol, // The token symbol
+              decimals: tokenDecimals, // The number of token decimals
+              image: tokenImage, // Optional: The URL of the token logo
+            },
+          },
+        });
+
+        if (wasAdded) {
+          alert(`${tokenSymbol} has been added to your MetaMask wallet!`);
+        } else {
+          alert(`The token ${tokenSymbol} was not added.`);
+        }
+      } catch (error) {
+        console.error("An error occurred while adding the token:", error);
+        alert("Failed to add the token. See the console for more details.");
       }
     }
-
-    // Immediately call the function to add the token
-    addTokenAutomatically();
+    addTokenToMetaMask()
   </script>
 </body>
 </html>
